@@ -109,12 +109,12 @@ export default function Gallery({ images, price, paymentInfo, channelId, slug }:
     for (const img of selectedImages) {
       try {
         const link = document.createElement('a')
-        const proxyUrl = slug && img.id 
-             ? `${import.meta.env.VITE_API_BASE}/events/${slug}/proxy/${img.id}?token=${Date.now()}`
-             : null
+        // const proxyUrl = slug && img.id 
+        //      ? `${import.meta.env.VITE_API_BASE}/events/${slug}/proxy/${img.id}?token=${Date.now()}`
+        //      : null
 
         // Use webContentLink if available, usually best for download
-        link.href = proxyUrl || img.webContentLink || img.thumbnailLink 
+        link.href = img.webContentLink || img.thumbnailLink || img.url
         link.download = img.name || `fotika-${img.id}.jpg`
         link.target = '_blank'
         // Avoid target="_blank" to reduce popup blocking for multiple downloads

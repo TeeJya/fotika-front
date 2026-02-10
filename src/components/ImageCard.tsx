@@ -35,7 +35,7 @@ export default function ImageCard({
   // However, if the user says "my images tend to get link 403", it might affect thumbnails too.
   // Let's use proxy for everything for reliability, but maybe we should trust thumbnailLink for grid if it works?
   // The user linked a thumbnail URL that was 403.
-  const displaySrc = proxyUrl || (img.thumbnailLink ? img.thumbnailLink.replace(/=s\d+/, '=s600') : src)
+  const displaySrc = (img.thumbnailLink ? img.thumbnailLink.replace(/=s\d+/, '=s600') : src)
   
   const timerRef = useRef<any>(null)
   const isLongPress = useRef(false)
