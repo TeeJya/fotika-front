@@ -81,19 +81,12 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext, price
   
   if (index == null || !img) return null
   
-  // Construct proxy URL
-  const proxyUrl = slug && img.id 
-    ? `${import.meta.env.VITE_API_BASE}/events/${slug}/proxy/${img.id}`
-    : null
-
-  // Prefer proxyUrl, then thumbnailLink logic...
-  let src = proxyUrl || img.url
-  if (!proxyUrl && img.thumbnailLink) {
-    // Replace size parameter (=s220) with =s0 for original size or sufficiently large size
-    src = img.thumbnailLink.replace(/=s\d+/, '=s2048') 
-  } else if (!proxyUrl && img.webContentLink) {
-    src = img.webContentLink
-  }
+  // Modified to use direct Google Drive thumbnail links (like slideshow) instead of proxy
+  // Use =s2048 (2k resolution) or =s0 (original) for high quality
+  let src = img.url || 
+            (img.thumbnailLink ? img.thumbnailLink.replace(/=s\d+/, '=s2048') : null) || 
+            img.webContentLink ||
+            (slug && img.id ? `${import.meta.env.VITE_API_BASE}/events/${slug}/proxy/${img.id}` : null)
 
   const handlePayment = async () => {
     if (!phoneNumber) {

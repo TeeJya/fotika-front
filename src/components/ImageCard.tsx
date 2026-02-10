@@ -18,11 +18,13 @@ export default function ImageCard({
   onToggleSelect,
   slug
 }: ImageCardProps) {
-  const proxyUrl = slug && img.id 
-    ? `${import.meta.env.VITE_API_BASE}/events/${slug}/proxy/${img.id}`
-    : null
-
-  const src = proxyUrl || img.thumbnailLink || img.webContentLink || img.thumbnail || img.smallUrl
+  // Modified to use direct Google Drive thumbnail links (like slideshow) instead of proxy
+  // This bypasses the complexity of the backend proxy for display.
+  // We use =s640 for grid items which is plenty sharp but faster than full res.
+  const src = img.url || 
+              (img.thumbnailLink ? img.thumbnailLink.replace(/=s\d+/, '=s640') : null) || 
+              img.webContentLink || 
+              (slug && img.id ? `${import.meta.env.VITE_API_BASE}/events/${slug}/proxy/${img.id}` : null)
   // Use a larger thumbnail for the actual display if possible to avoid blurs
   // If we have a proxy, use it (it serves full or streamed content). 
   // Ideally for grid we want small images, but proxy returns full.
