@@ -18,7 +18,7 @@ interface LightboxProps {
   slug?: string
 }
 
-export default function Lightbox({ images, index, onClose, onPrev, onNext, price = 0, paymentInfo, channelId, slug }: LightboxProps) {
+export default function Lightbox({ images, index, onClose, onPrev, onNext, price = 0, channelId, slug }: LightboxProps) {
   const img = (index != null && images) ? images[index] : null
   const [showPayment, setShowPayment] = React.useState(false)
   const [phoneNumber, setPhoneNumber] = React.useState('')
@@ -125,20 +125,23 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext, price
     }
   }
 
-    const handleDownload = (force = false) => {
+  const handleDownload = (force: any = false) => {
+      // Handle the case where the function is called from an event handler (force is an event object)
+      const isForceDownload = typeof force === 'boolean' ? force : false
+
       // Allow download if price is 0 OR force=true (paid) OR already unlocked
-      if (price > 0 && !force && !unlocked) {
+      if (price > 0 && !isForceDownload && !unlocked) {
         setShowPayment(true)
         return
       }
 
       // Prefer webContentLink (original), fallback to visible src
-      if (img.webContentLink && !proxyUrl) {
+      if (img.webContentLink) {
         window.open(img.webContentLink, '_blank')
       } else {
         // Fallback if webContentLink is missing or we use proxy
         const link = document.createElement('a')
-        link.href = proxyUrl || src
+        link.href = src || ''
         link.download = img.name || 'image'
         link.target = '_blank'
         link.click()
