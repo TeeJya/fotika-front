@@ -193,7 +193,13 @@ export function driveConnectUrl(userId: string) {
 }
 
 // SwiftWallet Integration (via backend proxy)
-const PAYMENT_API_BASE = import.meta.env.VITE_PAYMENT_API_BASE || 'http://localhost:3001/api'
+let PAYMENT_API_BASE = import.meta.env.VITE_PAYMENT_API_BASE || 'http://localhost:3001/api'
+
+// Force HTTPS if frontend is HTTPS to avoid Mixed Content errors
+if (typeof window !== 'undefined' && window.location.protocol === 'https:' && PAYMENT_API_BASE.startsWith('http:')) {
+    console.log('Upgrading API URL to HTTPS to match current pages protocol')
+    PAYMENT_API_BASE = PAYMENT_API_BASE.replace('http:', 'https:')
+}
 
 export async function initiatePayment(phoneNumber: string, amount: number, reference: string, channelId?: string) {
     // Format: Remove non-digits, ensure 254 prefix
